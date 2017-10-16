@@ -3,7 +3,14 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class TerrainManager : MonoBehaviour {
+    public class TerrainManager : MonoBehaviour
+    {
+
+        public int InitPoints = 8;
+        public float MostRightX = 50f;
+        public float MaxY = 5f;
+        public float MinY = 2f;
+        public int Iterations = 5;
 
         // Use this for initialization
         void Start ()
@@ -12,13 +19,14 @@ namespace Assets.Scripts
             var mf = GetComponent<MeshFilter>();
             var mesh = mf.mesh;
 
-            var terrainGenerator = new TerrainGenerator(5, 10f, 5f, 2f, 5);
+            var terrainGenerator = new TerrainGenerator(InitPoints, MostRightX, MaxY, MinY, Iterations);
 
             mesh.Clear();
             mesh.vertices = terrainGenerator.Vertices;
             mesh.triangles = terrainGenerator.Triangles;
             mesh.RecalculateNormals();
 
+            gameObject.AddComponent<MeshCollider>();
 //            foreach (var tri in terrainGenerator.Vertices)
 //            {
 //                Debug.Log(tri);
