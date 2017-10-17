@@ -7,6 +7,9 @@ namespace Assets.Scripts
     {
         public int InitPoints = 8;
         public int Iterations = 5;
+        public float Width = 25f;
+        public float MinHeight = 2f;
+        public float MaxHeight = 5f;
 
         // Use this for initialization
         void Start ()
@@ -15,7 +18,7 @@ namespace Assets.Scripts
             var mf = GetComponent<MeshFilter>();
             var mesh = mf.mesh;
 
-            var terrainGenerator = new TerrainGenerator(InitPoints, 50f, 2f, 5f, Iterations);
+            var terrainGenerator = new TerrainGenerator(InitPoints, Width, MinHeight, MaxHeight, Iterations);
 
             mesh.Clear();
             mesh.vertices = terrainGenerator.Vertices;
