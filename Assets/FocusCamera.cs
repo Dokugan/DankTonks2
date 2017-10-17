@@ -4,60 +4,22 @@ using UnityEngine;
 
 public class FocusCamera : MonoBehaviour
 {
-    public Transform target;
-    public float damping = 1;
-    public float lookAheadFactor = 3;
-    public float lookAheadReturnSpeed = 0.5f;
-    public float lookAheadMoveThreshold = 0.1f;
-    public float ClampY = 0f;
+    public GameObject Target;
+    private Renderer _renderer;
 
-    private float m_OffsetZ;
-    private Vector3 m_LastTargetPosition;
-    private Vector3 m_CurrentVelocity;
-    private Vector3 m_LookAheadPos;
-
-
-    // Use this for initialization
-    private void Start()
+    void Start()
     {
-        m_LastTargetPosition = target.position;
-        m_OffsetZ = (transform.position - target.position).z;
-        transform.parent = null;
+        _renderer = Target.GetComponent<Renderer>();
     }
 
 
-    // Update is called once per frame
-    private void Update()
+    void Update()
     {
-        // only update lookahead pos if accelerating or changed direction
-        float xMoveDelta = (target.position - m_LastTargetPosition).x;
+        var cam = Camera.main;
+        var p = cam.ScreenToWorldPoint(new Vector3(0, cam.pixelHeight, cam.nearClipPlane));
+        cam.orthographicSize = _renderer.bounds.size.x  * Screen.height / Screen.width * 0.5f;
 
-        bool updateLookAheadTarget = Mathf.Abs(xMoveDelta) > lookAheadMoveThreshold;
-
-        if (updateLookAheadTarget)
-        {
-            m_LookAheadPos = lookAheadFactor * Vector3.right * Mathf.Sign(xMoveDelta);
-        }
-        else
-        {
-            m_LookAheadPos = Vector3.MoveTowards(m_LookAheadPos, Vector3.zero, Time.deltaTime * lookAheadReturnSpeed);
-        }
-
-        Vector3 aheadTargetPos = target.position + m_LookAheadPos + Vector3.forward * m_OffsetZ;
-        Vector3 newPos = Vector3.SmoothDamp(transform.position, aheadTargetPos, ref m_CurrentVelocity, damping);
-
-        transform.position = ClampArea(newPos);
-
-        m_LastTargetPosition = target.position;
+        cam.transform.position = new Vector3(_renderer.bounds.center.x, _renderer.bounds.max.y, cam.transform.position.z);
     }
 
-
-
-    private Vector3 ClampArea(Vector3 input)
-    {
-        // Debug.Log("X: " + input.x + " Y: " + input.y);
-        if (input.y < ClampY)
-            input.y = ClampY;
-        return input;
-    }
 }

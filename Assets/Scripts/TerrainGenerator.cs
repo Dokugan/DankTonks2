@@ -11,19 +11,18 @@ namespace Assets.Scripts
     class TerrainGenerator
     {
         private int InitPoints { get; set; }
-        private float MostRightPointX { get; set; }
+        private float MaxX { get; set; }
         private float MaxHeight { get; set; }
         private float MinHeight { get; set; }
         public Vector3[] Vertices;
         public int[] Triangles;
 
-        public TerrainGenerator(int initPoints, float mostRightPointX, float maxHeight, float minHeight, int itterations)
+        public TerrainGenerator(int initPoints, float maxX, float minHeight, float maxHeight, int itterations)
         {
             InitPoints = initPoints;
             MaxHeight = maxHeight;
             MinHeight = minHeight;
-
-            MostRightPointX = mostRightPointX;
+            MaxX = maxX;
 
             var pointsList = GenerateTerrain(null, itterations);
 //            foreach (var point in pointsList)
@@ -49,7 +48,7 @@ namespace Assets.Scripts
             if (points == null)
             {
                 points = new List<Point2D>();
-                var increment = MostRightPointX / (InitPoints - 1);
+                var increment = MaxX / (InitPoints - 1);
                 var posX = 0f;
                 var rand = new Random();
 

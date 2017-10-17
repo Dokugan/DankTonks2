@@ -162,9 +162,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InitPoints: 8
-  MostRightX: 50
-  MaxY: 5
-  MinY: 2
   Iterations: 5
 --- !u!23 &78169506
 MeshRenderer:
@@ -391,12 +388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6aa5b170cc4fc45bca3504da7bba8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 518902061}
-  damping: 1
-  lookAheadFactor: 3
-  lookAheadReturnSpeed: 0.5
-  lookAheadMoveThreshold: 0.1
-  ClampY: 0
+  Target: {fileID: 78169504}
 --- !u!20 &1445103827
 Camera:
   m_ObjectHideFlags: 0
@@ -426,7 +418,7 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
+  m_HDR: 0
   m_AllowMSAA: 1
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
