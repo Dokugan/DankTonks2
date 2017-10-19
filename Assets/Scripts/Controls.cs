@@ -37,24 +37,6 @@ public class Controls : MonoBehaviour
 	        Transform projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
 
 	        projectile.transform.position = projectileSpawn.transform.position;
-
-//	        projectile.transform.position = _rotationPoint.position;
-//	        projectile.transform.Translate(transform.right * -.1f);
-	        //projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.forward * 10000);
 	    }
-
-
-	    //else
-	    //if (RotationPoint.localEulerAngles.z < -90)
-	    //RotationPoint.localEulerAngles = new Vector3(0, 0, -90);
-	    /*
-        if (y != 0)
-        {
-            rot.z += y * GunRotation * Time.deltaTime;
-            RotationPoint.rotation = rot;
-
-            Debug.Log(RotationPoint.rotation.eulerAngles.z);
-        }
-        */
 	}
 }
