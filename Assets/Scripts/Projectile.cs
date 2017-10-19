@@ -6,6 +6,8 @@ public class Projectile : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+        GetComponent<Rigidbody>().AddRelativeForce(transform.right * 500 * -1);
 		
 	}
 	
