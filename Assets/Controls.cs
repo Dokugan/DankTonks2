@@ -12,13 +12,17 @@ public class Controls : MonoBehaviour
     
 	void Update ()
 	{
-	    var x = Input.GetAxis("Horizontal");
-	    var y = Input.GetAxis("Vertical");
+	    var x = Input.GetAxis("Horizontal");//A & D
+	    var y = Input.GetAxis("Vertical");// S & W
 	    transform.position += new Vector3(x, 0, 0) * MovementSpeed * Time.deltaTime;
 
-	    RotationPoint.Rotate(new Vector3(0, 0, 90 * y), Time.deltaTime * GunRotation);
-        if (RotationPoint.localEulerAngles.z > 90)
+        RotationPoint.Rotate(new Vector3(0, 0,y), Time.deltaTime * GunRotation);
+
+	    if (RotationPoint.localEulerAngles.z > 90 && RotationPoint.localEulerAngles.z < 180)
             RotationPoint.localEulerAngles = new Vector3(0, 0, 90);
+	    if (RotationPoint.localEulerAngles.z < 270 && RotationPoint.localEulerAngles.z >= 180)
+	        RotationPoint.localEulerAngles = new Vector3(0, 0, 270);
+
         //else
         //if (RotationPoint.localEulerAngles.z < -90)
         //RotationPoint.localEulerAngles = new Vector3(0, 0, -90);
