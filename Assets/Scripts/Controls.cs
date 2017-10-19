@@ -33,10 +33,15 @@ public class Controls : MonoBehaviour
 	        var projectile = (GameObject) Instantiate(Resources.Load("Projectile"));
 	        
 	        projectile.transform.rotation = Quaternion.Euler(0,0,_rotationPoint.eulerAngles.z - 90);
-	        projectile.transform.position = _rotationPoint.position;
-	        projectile.transform.Translate(transform.right * -.1f);
-            //projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.forward * 10000);
-        }
+
+	        Transform projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
+
+	        projectile.transform.position = projectileSpawn.transform.position;
+
+//	        projectile.transform.position = _rotationPoint.position;
+//	        projectile.transform.Translate(transform.right * -.1f);
+	        //projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.forward * 10000);
+	    }
 
 
 	    //else
