@@ -31,10 +31,12 @@ public class Controls : MonoBehaviour
 	    if (Input.GetKeyDown(KeyCode.Space))
 	    {
 	        var projectile = (GameObject) Instantiate(Resources.Load("Projectile"));
-	        projectile.transform.position = transform.position;
+	        
 	        projectile.transform.rotation = Quaternion.Euler(0,0,_rotationPoint.eulerAngles.z - 90);
+	        projectile.transform.position = transform.position;
+	        projectile.transform.Translate(transform.right * -.1f);
             //projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.forward * 10000);
-	    }
+        }
 
 
 	    //else
