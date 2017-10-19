@@ -25,7 +25,7 @@ namespace Assets.Scripts
             mesh.triangles = terrainGenerator.Triangles;
             mesh.RecalculateNormals();
 
-            gameObject.AddComponent<MeshCollider>();
+            gameObject.AddComponent<MeshCollider>().isTrigger = true;
 
             //transform.position = new Vector3(p.x, -p.y, transform.position.z);
         } 
@@ -33,6 +33,11 @@ namespace Assets.Scripts
         // Update is called once per frame
         void Update () {
 		
+        }
+
+        void OnTriggerEnter(Collider other)
+        {
+            Destroy(other.gameObject);
         }
     }
 }
