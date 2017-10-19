@@ -35,6 +35,8 @@ public class Controls : MonoBehaviour
 	        projectile.transform.rotation = Quaternion.Euler(0,0,_rotationPoint.eulerAngles.z - 90);
 	        projectile.transform.position = transform.position;
 	        projectile.transform.Translate(transform.right * -.1f);
+
+            projectile.GetComponent<Rigidbody>().AddForce(Vector3.up * 300);
             //projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.forward * 10000);
         }
 
