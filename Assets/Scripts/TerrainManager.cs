@@ -9,7 +9,7 @@ namespace Assets.Scripts
     {
         public int InitPoints = 10;
         public int Iterations = 6;
-        private float MaxX = 25f;
+        public static float MaxX = 25f;
         public float MinHeight = 2f;
         public float MaxHeight = 8f;
         private Vector3[] _vertices;
@@ -130,7 +130,9 @@ namespace Assets.Scripts
 
             foreach (var point in _pointsList)
             {
-                if (Math.Pow((point.PosX - x),2) + Math.Pow((point.PosY - y),2) < Math.Pow(impactRadius,2))
+                if (Math.Pow((point.PosX - x),2) + Math.Pow((point.PosY - y),2) < Math.Pow(impactRadius,2) ||
+                    (point.PosY >= -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(point.PosX - x, 2)) + y &&
+                    (point.PosX > x - impactRadius && point.PosX < x + impactRadius)))
                 {
                     point.PosY = (float) -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(point.PosX - x, 2)) + y;
                     Debug.Log(point.PosX + " " + point.PosY);

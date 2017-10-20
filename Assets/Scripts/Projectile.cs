@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour {
 
+    void Update()
+    {
+        if (transform.position.y < 0 || transform.position.x > TerrainManager.MaxX || transform.position.x < 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         Debug.Log("contact");
