@@ -1,18 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("contact");
 
-        GetComponent<Rigidbody>().AddForce(transform.right * 500 * -1);
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        ContactPoint contact = collision.contacts[0];
+
+        var other = collision.collider;
+
+        if (other.tag == "Terrain")
+        {
+            var terrainmanager = (TerrainManager) other.gameObject.GetComponent(typeof(TerrainManager));
+            terrainmanager.CalculateImpact(contact.point.x, contact.point.y, 1);
+            Destroy(gameObject);
+        }
+    }
 }

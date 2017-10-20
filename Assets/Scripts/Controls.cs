@@ -31,12 +31,10 @@ public class Controls : MonoBehaviour
 	    if (Input.GetKeyDown(KeyCode.Space))
 	    {
 	        var projectile = (GameObject) Instantiate(Resources.Load("Projectile"));
-	        
 	        projectile.transform.rotation = Quaternion.Euler(0,0,_rotationPoint.eulerAngles.z - 90);
-
-	        Transform projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
-
+	        var projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
 	        projectile.transform.position = projectileSpawn.transform.position;
-	    }
+            projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * 500 * -1);
+        }
 	}
 }
