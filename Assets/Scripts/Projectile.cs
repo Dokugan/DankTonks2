@@ -3,10 +3,23 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour {
+public class Projectile : MonoBehaviour
+{
+    private Vector3 _previousPos;
+
+    void Start()
+    {
+        _previousPos = transform.position;
+    }
 
     void Update()
     {
+        var newDir = Mathf.Atan2(transform.position.y -_previousPos.y, transform.position.x -
+                                                                       _previousPos.x) * 180 / Mathf.PI;
+        transform.rotation = Quaternion.Euler(0, 0, newDir + 180);
+
+        _previousPos = transform.position;
+
         if (transform.position.y < 0 || transform.position.x > TerrainManager.MaxX || transform.position.x < 0)
         {
             Destroy(gameObject);
@@ -15,8 +28,6 @@ public class Projectile : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("contact");
-
         ContactPoint contact = collision.contacts[0];
 
         var other = collision.collider;

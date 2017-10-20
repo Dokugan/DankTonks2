@@ -135,7 +135,6 @@ namespace Assets.Scripts
                     (point.PosX > x - impactRadius && point.PosX < x + impactRadius)))
                 {
                     point.PosY = (float) -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(point.PosX - x, 2)) + y;
-                    Debug.Log(point.PosX + " " + point.PosY);
                 }
             }
 
