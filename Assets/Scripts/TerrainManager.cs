@@ -39,7 +39,7 @@ namespace Assets.Scripts
             mesh.triangles = _triangles;
             mesh.RecalculateNormals();
 
-            gameObject.AddComponent<MeshCollider>();
+            gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
 
         }
 
