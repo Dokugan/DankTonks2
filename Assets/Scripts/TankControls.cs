@@ -6,6 +6,8 @@ public class TankControls : MonoBehaviour
 {
     public float MaxTorque = 50f;
     private float GunRotation = 30f;
+    private float _fireForce = 500;
+    private float _maxFireForce = 2000;
 
     public WheelCollider[] WheelColliders = new WheelCollider[5];
     public Transform[] TireMeshes = new Transform[5];
@@ -44,7 +46,7 @@ public class TankControls : MonoBehaviour
             projectile.transform.rotation = Quaternion.Euler(0, 0, _rotationPoint.eulerAngles.z - 90);
             var projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
             projectile.transform.position = projectileSpawn.transform.position;
-            projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * 500 * -1);
+            projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * _fireForce * -1);
         }
     }
 
@@ -82,5 +84,10 @@ public class TankControls : MonoBehaviour
             TireMeshes[i].position = pos;
             //TireMeshes[i].rotation = quat;
         }
+    }
+
+    public void SetForceValue(float value)
+    {
+        _fireForce = value * _maxFireForce;
     }
 }
