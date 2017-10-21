@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class TankControls : MonoBehaviour
 {
-    public float MaxTorque = 25f;
+    public float MaxTorque = 50f;
+    private float GunRotation = 30f;
 
     public WheelCollider[] WheelColliders = new WheelCollider[5];
     public Transform[] TireMeshes = new Transform[5];
 
+    private Transform _rotationPoint;
+
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
+	    _rotationPoint = transform.GetChild(0);
 
         foreach (var wheel in WheelColliders)
         {
@@ -23,6 +28,24 @@ public class TankControls : MonoBehaviour
     void Update()
     {
         UpdateMeshesPositions();
+
+        var y = Input.GetAxis("Vertical");
+
+        _rotationPoint.Rotate(new Vector3(0, 0, y), Time.deltaTime * GunRotation);
+
+        if (_rotationPoint.localEulerAngles.z > 90 && _rotationPoint.localEulerAngles.z < 180)
+            _rotationPoint.localEulerAngles = new Vector3(0, 0, 90);
+        if (_rotationPoint.localEulerAngles.z < 270 && _rotationPoint.localEulerAngles.z >= 180)
+            _rotationPoint.localEulerAngles = new Vector3(0, 0, 270);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            var projectile = (GameObject)Instantiate(Resources.Load("Projectile"));
+            projectile.transform.rotation = Quaternion.Euler(0, 0, _rotationPoint.eulerAngles.z - 90);
+            var projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
+            projectile.transform.position = projectileSpawn.transform.position;
+            projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * 500 * -1);
+        }
     }
 
 	void FixedUpdate ()
