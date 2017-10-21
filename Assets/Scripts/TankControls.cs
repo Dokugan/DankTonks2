@@ -53,10 +53,21 @@ public class TankControls : MonoBehaviour
 
 	    float accelerate = Input.GetAxis("Horizontal");
 
-	    for (int i = 0; i < 5; i++)
+	    if (accelerate != 0)
 	    {
-	        WheelColliders[i].motorTorque = accelerate * MaxTorque;
+	        for (int i = 0; i < 5; i++)
+	        {
+	            WheelColliders[i].brakeTorque = 0;
+	            WheelColliders[i].motorTorque = accelerate * MaxTorque; 
+	        }
 	    }
+	    else
+	    {
+	        for (int i = 0; i < 5; i++)
+	        {
+	            WheelColliders[i].brakeTorque = 1000;
+	        }
+        }
 
     }
 
