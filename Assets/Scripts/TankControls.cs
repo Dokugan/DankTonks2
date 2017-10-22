@@ -53,11 +53,6 @@ public class TankControls : MonoBehaviour
             projectile.transform.position = projectileSpawn.transform.position;
             projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * _fireForce * -1);
         }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            DealDamage(10);
-        }
     }
 
 	void FixedUpdate ()
