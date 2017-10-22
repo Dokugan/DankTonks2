@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TankControls : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class TankControls : MonoBehaviour
     private float GunRotation = 30f;
     private float _fireForce = 500;
     private float _maxFireForce = 2000;
+    private float _health = 100;
+    private Slider _healthbarSlider;
 
     public WheelCollider[] WheelColliders = new WheelCollider[5];
     public Transform[] TireMeshes = new Transform[5];
@@ -18,7 +21,7 @@ public class TankControls : MonoBehaviour
 	void Start ()
 	{
 	    _rotationPoint = transform.GetChild(0);
-
+	    _healthbarSlider = GameObject.Find("HealthBar").GetComponent<Slider>();
         foreach (var wheel in WheelColliders)
         {
             wheel.steerAngle = 90;
@@ -47,6 +50,12 @@ public class TankControls : MonoBehaviour
             var projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
             projectile.transform.position = projectileSpawn.transform.position;
             projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * _fireForce * -1);
+        }
+        UpdateHealthBarLocation();
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            DealDamage(10);
         }
     }
 
@@ -89,5 +98,30 @@ public class TankControls : MonoBehaviour
     public void SetForceValue(float value)
     {
         _fireForce = value * _maxFireForce;
+    }
+
+    public void DealDamage(float damage)
+    {
+        if (_health - damage <= 0)
+        {
+            //TODO: Ga dood
+            _health = 0;
+        }
+        else
+        {
+            _health -= damage;
+        }
+        UpdateHealthbarValue();
+    }
+
+
+    public void UpdateHealthBarLocation()
+    {
+        //TODO: Set healthbar location a little bit above the tank
+    }
+
+    public void UpdateHealthbarValue()
+    {
+        _healthbarSlider.value = _health;
     }
 }
