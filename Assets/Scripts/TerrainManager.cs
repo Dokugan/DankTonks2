@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Assets.Scripts
 {
-    public class TerrainManager : MonoBehaviour
+    public class TerrainManager : NetworkBehaviour
     {
         public int InitPoints = 10;
         public int Iterations = 6;
@@ -14,6 +15,8 @@ namespace Assets.Scripts
         public float MaxHeight = 8f;
         private Vector3[] _vertices;
         private int[] _triangles;
+
+        [SyncVar]
         private List<Point3D> _pointsList;
 
         // Use this for initialization
