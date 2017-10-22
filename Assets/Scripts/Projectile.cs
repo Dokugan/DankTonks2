@@ -38,7 +38,7 @@ public class Projectile : MonoBehaviour
             terrainmanager.CalculateImpact(contact.point.x, contact.point.y, 1);
             Destroy(gameObject);
         }
-        if (other.tag == "Tank")
+        else if (other.tag == "Tank")
         {
             var tank = (TankControls) other.gameObject.GetComponent(typeof(TankControls));
             tank.DealDamage(10);
