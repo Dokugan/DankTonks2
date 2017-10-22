@@ -20,8 +20,10 @@ public class TankControls : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-	    _rotationPoint = transform.GetChild(0);
+	    gameObject.tag = "Tank";
+        _rotationPoint = transform.GetChild(0);
 	    _healthbarSlider = GameObject.Find("HealthBar").GetComponent<Slider>();
+	    UpdateHealthbarValue();
         foreach (var wheel in WheelColliders)
         {
             wheel.steerAngle = 90;
