@@ -10,11 +10,24 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
     private float _spawnOffset = 1f;
 
     public GameObject Terrain;
-    
+
+    public int Iterations = 6;
+    private Vector2[] _terrainPoints;
+
     public override void OnStartServer()
     {
         Terrain = Instantiate(Terrain);
+        var terrainManager = (TerrainManager) Terrain.GetComponent(typeof(TerrainManager));
+        _terrainPoints = terrainManager.GenerateTerrain(null, Iterations);
         base.OnStartServer();
+    }
+
+    public override void OnClientConnect(NetworkConnection conn)
+    {
+        var terrainManager = (TerrainManager)Terrain.GetComponent(typeof(TerrainManager));
+        terrainManager.SetTerrainPoints(_terrainPoints);
+        terrainManager.SetMesh();
+        base.OnClientConnect(conn);
     }
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)

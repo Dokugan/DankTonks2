@@ -9,40 +9,42 @@ namespace Assets.Scripts
     public class TerrainManager : NetworkBehaviour
     {
         public int InitPoints = 10;
-        public int Iterations = 6;
         public static float MaxX = 25f;
         public float MinHeight = 2f;
         public float MaxHeight = 8f;
-        private Vector3[] _vertices;
+        public Vector3[] Vertices;
         private int[] _triangles;
 
         [SyncVar]
-        private List<Point3D> _pointsList;
+        public Vector2[] PointsList;
 
         // Use this for initialization
         void Start ()
         {
-            _pointsList = GenerateTerrain(null, Iterations);
-
             gameObject.tag = "Terrain";
+        }
+
+        [ClientRpc]
+        public void SetTerrainPoints(Vector2[] points)
+        {
+            PointsList = points;
+        }
+
+        public void SetMesh()
+        {
+            _triangles = CreateTriangles(Vertices);
 
             var mf = GetComponent<MeshFilter>();
             var mesh = mf.mesh;
 
-            GenerateTerrain(null, Iterations);
-            _vertices = ToVectorArray(_pointsList);
-            _triangles = CreateTriangles(_vertices);
-
             mesh.Clear();
-            mesh.vertices = _vertices;
+            mesh.vertices = Vertices;
             mesh.triangles = _triangles;
             mesh.RecalculateNormals();
-
             gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
-
         }
 
-        private List<Point3D> GenerateTerrain([CanBeNull] List<Point3D> points, int iterations)
+        public Vector2[] GenerateTerrain([CanBeNull] List<Point3D> points, int iterations)
         {
             if (points == null)
             {
@@ -83,21 +85,29 @@ namespace Assets.Scripts
                 }
                 GenerateTerrain(points, iterations - 1);
             }
-            return points;
+
+            PointsList = new Vector2[points.Count];
+
+            for (int i = 0; i < points.Count; i++ )
+            {
+                PointsList[i] = new Vector2(points[i].PosX, points[i].PosY);
+            }
+
+            return PointsList;
         }
 
-        private Vector3[] ToVectorArray(List<Point3D> points)
+        private Vector3[] ToVector3Array(Vector2[] points)
         {
-            var vectors = new Vector3[points.Count * 4];
+            var vectors = new Vector3[points.Length * 4];
             var index = 0;
             var reverse = vectors.Length -2;
 
             foreach (var point in points)
             {
-                vectors[index] = new Vector3(point.PosX, 0, 0);
-                vectors[index + 1] = new Vector3(point.PosX, point.PosY, 0);
-                vectors[reverse] = new Vector3(point.PosX, 0, 1);
-                vectors[reverse + 1] = new Vector3(point.PosX, point.PosY, 1);
+                vectors[index] = new Vector3(point.x, 0, 0);
+                vectors[index + 1] = new Vector3(point.x, point.y, 0);
+                vectors[reverse] = new Vector3(point.x, 0, 1);
+                vectors[reverse + 1] = new Vector3(point.x, point.y, 1);
                 index += 2;
                 reverse -= 2;
             }
@@ -108,7 +118,7 @@ namespace Assets.Scripts
         private int[] CreateTriangles(Vector3[] vertices)
         {
             //+ (_pointsList.Count -1) * 2 * 3
-            var triangles = new int[vertices.Length * 3 + (_pointsList.Count - 1) * 2 * 3];
+            var triangles = new int[vertices.Length * 3 + (Vertices. Length / 4 - 1) * 2 * 3];
             int index = 0;
 
             for (var i = 0; i < vertices.Length - 2; i++)
@@ -128,7 +138,7 @@ namespace Assets.Scripts
                 index += 3;
             }
 
-            for (var j = 1; j < _pointsList.Count * 2 ; j += 2)
+            for (var j = 1; j < Vertices.Length * 2 ; j += 2)
             {
                 triangles[index] = j;
                 triangles[index + 1] = vertices.Length - j ;
@@ -157,23 +167,23 @@ namespace Assets.Scripts
         public void CalculateImpact(float x, float y, float impactRadius)
         {
 
-            foreach (var point in _pointsList)
+            for (int i = 0; i < PointsList.Length; i ++)
             {
-                if (Math.Pow((point.PosX - x),2) + Math.Pow((point.PosY - y),2) < Math.Pow(impactRadius,2) ||
-                    (point.PosY >= -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(point.PosX - x, 2)) + y &&
-                    (point.PosX > x - impactRadius && point.PosX < x + impactRadius)))
+                if (Math.Pow((PointsList[i].x - x),2) + Math.Pow((PointsList[i].y - y),2) < Math.Pow(impactRadius,2) ||
+                    (PointsList[i].y >= -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(PointsList[i].x - x, 2)) + y &&
+                    (PointsList[i].x > x - impactRadius && PointsList[i].x < x + impactRadius)))
                 {
-                    point.PosY = (float) -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(point.PosX - x, 2)) + y;
+                    PointsList[i].y = (float) -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(PointsList[i].x - x, 2)) + y;
                 }
             }
 
             var mf = GetComponent<MeshFilter>();
             var mesh = mf.mesh;
 
-            _vertices = ToVectorArray(_pointsList);
-            _triangles = CreateTriangles(_vertices);
+            Vertices = ToVector3Array(PointsList);
+            _triangles = CreateTriangles(Vertices);
             mesh.Clear();
-            mesh.vertices = _vertices;
+            mesh.vertices = Vertices;
             mesh.triangles = _triangles;
             mesh.RecalculateNormals();
             var mc = gameObject.GetComponent<MeshCollider>();
