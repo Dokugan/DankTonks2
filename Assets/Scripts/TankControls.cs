@@ -21,6 +21,9 @@ public class TankControls : MonoBehaviour
 	void Start ()
 	{
 	    gameObject.tag = "Tank";
+
+	    //GetComponent<Rigidbody>().centerOfMass = transform.GetChild(6).position;
+
         _rotationPoint = transform.GetChild(0);
 	    _healthbarSlider = GameObject.Find("HealthBar").GetComponent<Slider>();
 	    UpdateHealthbarValue();
@@ -72,7 +75,7 @@ public class TankControls : MonoBehaviour
 	    {
 	        for (int i = 0; i < 5; i++)
 	        {
-	            WheelColliders[i].brakeTorque = 1000;
+	            WheelColliders[i].brakeTorque = 10000;
 	        }
         }
 

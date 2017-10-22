@@ -32,10 +32,6 @@ namespace Assets.Scripts
 
             mesh.Clear();
             mesh.vertices = _vertices;
-            foreach (var vari in _triangles)
-            {
-                print(vari);
-            }
             mesh.triangles = _triangles;
             mesh.RecalculateNormals();
 
@@ -112,8 +108,6 @@ namespace Assets.Scripts
             var triangles = new int[vertices.Length * 3 + (_pointsList.Count - 1) * 2 * 3];
             int index = 0;
 
-            Debug.Log(vertices.Length + "   " + _pointsList.Count);
-
             for (var i = 0; i < vertices.Length - 2; i++)
             {
                 if (i % 2 == 0)
@@ -130,8 +124,6 @@ namespace Assets.Scripts
                 }
                 index += 3;
             }
-            
-            Debug.Log(index + "  " + triangles.Length);
 
             for (var j = 1; j < _pointsList.Count * 2 ; j += 2)
             {
@@ -144,8 +136,6 @@ namespace Assets.Scripts
 
                 index += 6;
             }
-
-            Debug.Log(triangles[index - 1]);
 
             return triangles;
         }
@@ -163,7 +153,6 @@ namespace Assets.Scripts
 
         public void CalculateImpact(float x, float y, float impactRadius)
         {
-            Debug.Log(x + " " + y);
 
             foreach (var point in _pointsList)
             {
