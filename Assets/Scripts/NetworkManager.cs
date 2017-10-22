@@ -6,14 +6,15 @@ using UnityEngine.Networking;
 
 public class NetworkManager : UnityEngine.Networking.NetworkManager
 {
-    public GameObject Terrain;
-
     private float _spawnOffset = 1f;
+
+    public GameObject Terrain;
+    private GameObject _spawnedTerrain;
 
     public override void OnStartServer()
     {
+        _spawnedTerrain = Instantiate(Terrain);
         base.OnStartServer();
-        NetworkServer.Spawn(Terrain);
     }
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
@@ -31,5 +32,7 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
         var player = Instantiate(playerPrefab);
         player.transform.position = new Vector3(spawnX, 10, 0);
         NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
+        NetworkServer.Spawn(_spawnedTerrain);
     }
+   
 }

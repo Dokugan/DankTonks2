@@ -115,6 +115,7 @@ public class TankControls : MonoBehaviour
 
     public void UpdateHealthbarValue()
     {
-        _healthbarSlider.value = _health;
+        if (_healthbarSlider != null)
+            _healthbarSlider.value = _health;
     }
 }
