@@ -51,7 +51,6 @@ public class TankControls : MonoBehaviour
             projectile.transform.position = projectileSpawn.transform.position;
             projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * _fireForce * -1);
         }
-        UpdateHealthBarLocation();
 
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -112,12 +111,6 @@ public class TankControls : MonoBehaviour
             _health -= damage;
         }
         UpdateHealthbarValue();
-    }
-
-
-    public void UpdateHealthBarLocation()
-    {
-        //TODO: Set healthbar location a little bit above the tank
     }
 
     public void UpdateHealthbarValue()
