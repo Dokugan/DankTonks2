@@ -10,7 +10,7 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
     private float _spawnOffset = 1f;
 
     public GameObject Terrain;
-
+    
     public override void OnStartServer()
     {
         Terrain = Instantiate(Terrain);
