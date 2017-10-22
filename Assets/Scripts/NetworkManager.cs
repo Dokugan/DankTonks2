@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
@@ -9,11 +10,10 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
     private float _spawnOffset = 1f;
 
     public GameObject Terrain;
-    private GameObject _spawnedTerrain;
 
     public override void OnStartServer()
     {
-        _spawnedTerrain = Instantiate(Terrain);
+        Terrain = Instantiate(Terrain);
         base.OnStartServer();
     }
 
@@ -32,7 +32,7 @@ public class NetworkManager : UnityEngine.Networking.NetworkManager
         var player = Instantiate(playerPrefab);
         player.transform.position = new Vector3(spawnX, 10, 0);
         NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-        NetworkServer.Spawn(_spawnedTerrain);
+        
+        NetworkServer.Spawn(Terrain);
     }
-   
 }
