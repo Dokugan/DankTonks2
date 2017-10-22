@@ -4,27 +4,19 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts
 {
     class TerrainSync : NetworkBehaviour
     {
-
-        [SyncVar] public int Seed;
+        [SyncVar] private int seed;
 
         void Start()
         {
-            GenSeed();
-            UnityEngine.Random.InitState(Seed);
-            gameObject.AddComponent<TerrainManager>();
-        }
-
-        void GenSeed()
-        {
             if (isServer)
-                Seed = UnityEngine.Random.Range(0, 100000);
-            Debug.Log(Seed);
+                seed = Random.Range(0, 50000);
+            Random.InitState(seed);
         }
     }
 }
