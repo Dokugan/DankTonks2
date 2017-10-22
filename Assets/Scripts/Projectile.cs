@@ -40,7 +40,7 @@ public class Projectile : MonoBehaviour
         }
         else if (other.tag == "Tank")
         {
-            var tank = (TankControls) other.gameObject.GetComponent(typeof(TankControls));
+            var tank = (TankControls)other.transform.parent.gameObject.GetComponent(typeof(TankControls));
             tank.DealDamage(10);
             Destroy(gameObject);
         }
