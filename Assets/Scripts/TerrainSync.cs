@@ -18,5 +18,10 @@ namespace Assets.Scripts
                 seed = Random.Range(0, 50000);
             Random.InitState(seed);
         }
+
+        void Update()
+        {
+            // DON'T REMOVE!
+        }
     }
 }
