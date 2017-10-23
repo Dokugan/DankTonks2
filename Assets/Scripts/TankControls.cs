@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class TankControls : MonoBehaviour
+public class TankControls : NetworkBehaviour
 {
     public float MaxTorque = 50f;
     private float GunRotation = 30f;
@@ -39,22 +40,21 @@ public class TankControls : MonoBehaviour
     {
         UpdateMeshesPositions();
 
-        var y = Input.GetAxis("Vertical");
-
-        _rotationPoint.Rotate(new Vector3(0, 0, y), Time.deltaTime * GunRotation);
-
-        if (_rotationPoint.localEulerAngles.z > 90 && _rotationPoint.localEulerAngles.z < 180)
-            _rotationPoint.localEulerAngles = new Vector3(0, 0, 90);
-        if (_rotationPoint.localEulerAngles.z < 270 && _rotationPoint.localEulerAngles.z >= 180)
-            _rotationPoint.localEulerAngles = new Vector3(0, 0, 270);
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (isLocalPlayer)
         {
-            var projectile = (GameObject)Instantiate(Resources.Load("Projectile"));
-            projectile.transform.rotation = Quaternion.Euler(0, 0, _rotationPoint.eulerAngles.z - 90);
-            var projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
-            projectile.transform.position = projectileSpawn.transform.position;
-            projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * _fireForce * -1);
+            var y = Input.GetAxis("Vertical");
+
+            _rotationPoint.Rotate(new Vector3(0, 0, y), Time.deltaTime * GunRotation);
+
+            if (_rotationPoint.localEulerAngles.z > 90 && _rotationPoint.localEulerAngles.z < 180)
+                _rotationPoint.localEulerAngles = new Vector3(0, 0, 90);
+            if (_rotationPoint.localEulerAngles.z < 270 && _rotationPoint.localEulerAngles.z >= 180)
+                _rotationPoint.localEulerAngles = new Vector3(0, 0, 270);
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                CmdSpawnProjectile(_fireForce);
+            }
         }
     }
 
@@ -117,5 +117,17 @@ public class TankControls : MonoBehaviour
     {
         if (_healthbarSlider != null)
             _healthbarSlider.value = _health;
+    }
+
+    [Command]
+    public void CmdSpawnProjectile(float fireForce)
+    {
+        var projectile = (GameObject)Instantiate(Resources.Load("Projectile"));
+        projectile.transform.rotation = Quaternion.Euler(0, 0, _rotationPoint.eulerAngles.z - 90);
+        var projectileSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform;
+        projectile.transform.position = projectileSpawn.transform.position;
+        projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.right * fireForce * -1);
+        
+        NetworkServer.Spawn(projectile);
     }
 }

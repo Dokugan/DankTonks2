@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 114334092623623852}
   - component: {fileID: 114138488957802754}
   - component: {fileID: 114866994297029524}
+  - component: {fileID: 114720856432039014}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -1216,6 +1217,25 @@ MonoBehaviour:
   - {fileID: 4250426237726096}
   - {fileID: 4798820297821876}
   - {fileID: 4026342528639472}
+--- !u!114 &114720856432039014
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1269502208034614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1267208747, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 4403723935158190}
+  m_ChildIndex: 0
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_MovementThreshold: 0.001
+  m_InterpolateRotation: 0.5
+  m_InterpolateMovement: 0.5
 --- !u!114 &114854320656199912
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1276,7 +1296,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 3
-  m_SendInterval: 0.1
+  m_SendInterval: 0.033333335
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 0

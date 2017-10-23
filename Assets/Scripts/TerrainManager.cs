@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
-using NetworkManager = UnityEngine.Networking.NetworkManager;
 
 namespace Assets.Scripts
 {
@@ -11,22 +10,40 @@ namespace Assets.Scripts
     {
         public Vector3[] Vertices;
         private int[] _triangles;
-        public Vector2[] PointsList;
+
+        [SerializeField] private SyncListVector2 _pointsList = new SyncListVector2();
+
+        private const int InitPoints = 8;
+        public static float MaxX = 25f;
+        private const float MinHeight = 2f;
+        private const float MaxHeight = 8f;
+        private const int Iterations = 5;
 
         // Use this for initialization
         void Start()
         {
             gameObject.tag = "Terrain";
+
+            if (isServer)
+            {
+                List<Vector2> points = GenerateTerrain(null, Iterations, InitPoints, MaxX, MinHeight, MaxHeight);
+                foreach (var point in points)
+                {
+                    _pointsList.Add(point);
+                }
+            }
+
+            SetMesh();
         }
 
-        [ClientRpc (channel = 3)]
-        public void RpcSetTerrainPoints(Vector2[] points)
+        public override void OnStartClient()
         {
-            PointsList = points;
+            _pointsList.Callback = OnTerrainChanged;
         }
 
         public void SetMesh()
         {
+            Vertices = ToVector3Array(_pointsList);
             _triangles = CreateTriangles(Vertices);
 
             var mf = GetComponent<MeshFilter>();
@@ -36,15 +53,24 @@ namespace Assets.Scripts
             mesh.vertices = Vertices;
             mesh.triangles = _triangles;
             mesh.RecalculateNormals();
-            gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
+
+            var mc = gameObject.GetComponent<MeshCollider>();
+
+            if (mc == null)
+            {
+                gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
+            }else{
+                mc.sharedMesh = null;
+                mc.sharedMesh = mesh;
+            }
         }
 
-        public static Vector2[] GenerateTerrain([CanBeNull] List<Vector2> points, int iterations, int initPoints, float maxX, float minHeight, float maxHeight)
+        public static List<Vector2> GenerateTerrain([CanBeNull] List<Vector2> points, int iterations, int initPoints, float maxX, float minHeight, float maxHeight)
         {
             if (points == null)
             {
                 points = new List<Vector2>();
-                var increment = NetworkManager.MaxX / (initPoints - 1);
+                var increment = MaxX / (initPoints - 1);
                 var posX = 0f;
 
                 for (var i = 0; i < initPoints; i++)
@@ -81,19 +107,12 @@ namespace Assets.Scripts
                 GenerateTerrain(points, iterations - 1, initPoints, maxX, minHeight, maxHeight);
             }
 
-            var pointsList = new Vector2[points.Count];
-
-            for (int i = 0; i < points.Count; i++)
-            {
-                pointsList[i] = new Vector2(points[i].x, points[i].y);
-            }
-
-            return pointsList;
+            return points;
         }
 
-        private Vector3[] ToVector3Array(Vector2[] points)
+        private Vector3[] ToVector3Array(SyncListStruct<Vector2> points)
         {
-            var vectors = new Vector3[points.Length * 4];
+            var vectors = new Vector3[points.Count * 4];
             var index = 0;
             var reverse = vectors.Length - 2;
 
@@ -113,7 +132,7 @@ namespace Assets.Scripts
         private int[] CreateTriangles(Vector3[] vertices)
         {
             //+ (_pointsList.Count -1) * 2 * 3
-            var triangles = new int[vertices.Length * 3 + (Vertices.Length / 4 - 1) * 2 * 3];
+            var triangles = new int[vertices.Length * 3 + (_pointsList.Count - 1) * 2 * 3];
             int index = 0;
 
             for (var i = 0; i < vertices.Length - 2; i++)
@@ -133,7 +152,7 @@ namespace Assets.Scripts
                 index += 3;
             }
 
-            for (var j = 1; j < Vertices.Length * 2; j += 2)
+            for (var j = 1; j < _pointsList.Count * 2; j += 2)
             {
                 triangles[index] = j;
                 triangles[index + 1] = vertices.Length - j;
@@ -161,30 +180,29 @@ namespace Assets.Scripts
 
         public void CalculateImpact(float x, float y, float impactRadius)
         {
-
-            for (int i = 0; i < PointsList.Length; i++)
+            if (isServer)
             {
-                if (Math.Pow((PointsList[i].x - x), 2) + Math.Pow((PointsList[i].y - y), 2) < Math.Pow(impactRadius, 2) ||
-                    (PointsList[i].y >= -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(PointsList[i].x - x, 2)) + y &&
-                     (PointsList[i].x > x - impactRadius && PointsList[i].x < x + impactRadius)))
+                for (int i = 0; i < _pointsList.Count; i++)
                 {
-                    PointsList[i].y = (float)-Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(PointsList[i].x - x, 2)) + y;
+                    if (Math.Pow((_pointsList[i].x - x), 2) + Math.Pow((_pointsList[i].y - y), 2) < Math.Pow(impactRadius, 2) ||
+                        (_pointsList[i].y >= -Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(_pointsList[i].x - x, 2)) + y &&
+                         (_pointsList[i].x > x - impactRadius && _pointsList[i].x < x + impactRadius)))
+                    {
+                        _pointsList[i] = new Vector2(_pointsList[i].x, (float)-Math.Sqrt(Math.Pow(impactRadius, 2) - Math.Pow(_pointsList[i].x - x, 2)) + y);
+                    }
                 }
+                SetMesh();
             }
-
-            var mf = GetComponent<MeshFilter>();
-            var mesh = mf.mesh;
-
-            Vertices = ToVector3Array(PointsList);
-            _triangles = CreateTriangles(Vertices);
-            mesh.Clear();
-            mesh.vertices = Vertices;
-            mesh.triangles = _triangles;
-            mesh.RecalculateNormals();
-            var mc = gameObject.GetComponent<MeshCollider>();
-            mc.sharedMesh = null;
-            mc.sharedMesh = mesh;
-
         }
+
+        private void OnTerrainChanged(SyncListVector2.Operation operation, int index)
+        {
+            SetMesh();
+        }
+    }
+
+    public class SyncListVector2 : SyncListStruct<Vector2>
+    {
+        
     }
 }

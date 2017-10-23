@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Projectile : MonoBehaviour
+public class Projectile : NetworkBehaviour
 {
     private Vector3 _previousPos;
 
@@ -14,13 +15,12 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
-        
-
-        if (transform.position.y < 0 || transform.position.x > NetworkManager.MaxX || transform.position.x < 0)
+        if (transform.position.y < 0 || transform.position.x > TerrainManager.MaxX || transform.position.x < 0)
         {
             Destroy(gameObject);
         }
     }
+
 
     void FixedUpdate()
     {
@@ -54,5 +54,4 @@ public class Projectile : MonoBehaviour
             }
         }
     }
-
 }
