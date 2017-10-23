@@ -16,7 +16,7 @@ public class Projectile : MonoBehaviour
     {
         
 
-        if (transform.position.y < 0 || transform.position.x > TerrainManager.MaxX || transform.position.x < 0)
+        if (transform.position.y < 0 || transform.position.x > NetworkManager.MaxX || transform.position.x < 0)
         {
             Destroy(gameObject);
         }
