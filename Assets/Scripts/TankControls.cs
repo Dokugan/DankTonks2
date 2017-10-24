@@ -107,13 +107,18 @@ public class TankControls : NetworkBehaviour
         _fireForce = value * _maxFireForce;
     }
 
+    public void Die()
+    {
+        Destroy(this);
+    }
+
     [Command]
     public void CmdDealDamage(float damage)
     {
         if (_health - damage <= 0)
         {
-            //TODO: Ga dood
             _health = 0;
+            Die();
         }
         else
         {
