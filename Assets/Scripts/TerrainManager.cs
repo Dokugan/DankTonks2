@@ -10,6 +10,7 @@ namespace Assets.Scripts
     {
         public Vector3[] Vertices;
         private int[] _triangles;
+        public GameObject SidePane2;
 
         [SerializeField] private SyncListVector2 _pointsList = new SyncListVector2();
 
@@ -22,6 +23,7 @@ namespace Assets.Scripts
         // Use this for initialization
         void Start()
         {
+            SidePane2.transform.position = new Vector3(MaxX, 0 ,0);
             gameObject.tag = "Terrain";
 
             if (isServer)
