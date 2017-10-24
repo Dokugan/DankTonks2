@@ -60,10 +60,10 @@ public class TankControls : NetworkBehaviour
 
 	void FixedUpdate ()
 	{
-	    if (transform.localEulerAngles.z > 45 && transform.localEulerAngles.z < 180)
-	        transform.localEulerAngles = new Vector3(0, 0, 45);
-	    if (transform.localEulerAngles.z < 315 && transform.localEulerAngles.z >= 180)
-	        transform.localEulerAngles = new Vector3(0, 0, 315);
+//	    if (transform.localEulerAngles.z > 45 && transform.localEulerAngles.z < 180)
+//	        transform.localEulerAngles = new Vector3(0, 0, 45);
+//	    if (transform.localEulerAngles.z < 315 && transform.localEulerAngles.z >= 180)
+//	        transform.localEulerAngles = new Vector3(0, 0, 315);
 
         float accelerate = Input.GetAxis("Horizontal");
 
