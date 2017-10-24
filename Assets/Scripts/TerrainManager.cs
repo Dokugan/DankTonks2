@@ -15,9 +15,9 @@ namespace Assets.Scripts
 
         private const int InitPoints = 8;
         public static float MaxX = 25f;
-        private const float MinHeight = 2f;
-        private const float MaxHeight = 8f;
-        private const int Iterations = 5;
+        private const float MinHeight = 6f;
+        private const float MaxHeight = 10f;
+        private const int Segments = 256;
 
         // Use this for initialization
         void Start()
@@ -26,7 +26,7 @@ namespace Assets.Scripts
 
             if (isServer)
             {
-                List<Vector2> points = GenerateTerrain(null, Iterations, InitPoints, MaxX, MinHeight, MaxHeight);
+                List<Vector2> points = GenerateTerrain(InitPoints, Segments, MaxX, MinHeight, MaxHeight);
                 foreach (var point in points)
                 {
                     _pointsList.Add(point);
@@ -65,49 +65,61 @@ namespace Assets.Scripts
             }
         }
 
-        public static List<Vector2> GenerateTerrain([CanBeNull] List<Vector2> points, int iterations, int initPoints, float maxX, float minHeight, float maxHeight)
+        public static List<Vector2> GenerateTerrain(int initPoints, int segments, float maxX, float minHeight, float maxHeight)
         {
-            if (points == null)
-            {
-                points = new List<Vector2>();
-                var increment = MaxX / (initPoints - 1);
-                var posX = 0f;
+            List<Vector2> originalPoints = new List<Vector2>();
+            var increment = MaxX / (initPoints - 1);
+            var posX = 0f;
 
-                for (var i = 0; i < initPoints; i++)
+            for (var i = 0; i < initPoints; i++)
+            {
+                var height = minHeight + (UnityEngine.Random.value * (maxHeight - minHeight));
+                originalPoints.Add(new Vector2(posX, height));
+                posX += increment;
+            }
+
+            var points = new List<Vector2>();
+            points.Add(originalPoints[0]);
+
+            for (int i = 0; i < originalPoints.Count - 1; i++)
+            {
+                var p0 = originalPoints[i];
+                var p1 = new Vector2(originalPoints[i].x + (originalPoints[i + 1].x - originalPoints[i].x) / 2, originalPoints[i].y);
+                var p2 = new Vector2(originalPoints[i].x + (originalPoints[i + 1].x - originalPoints[i].x) / 2, originalPoints[i+1].y);
+                var p3 = originalPoints[i + 1];
+
+                print("p0x: " + p0.x);
+                print("p1x: " + p1.x);
+                print("p2x: " + p2.x);
+                print("p3x: " + p3.x);
+                
+                for (var j = 0; j < segments / initPoints; j++)
                 {
-                    var height = minHeight + (UnityEngine.Random.value * (maxHeight - minHeight));
-                    points.Add(new Vector2(posX, height));
-                    posX += increment;
+                    var t = j / (float)(segments / initPoints);
+                    points.Add(CalculateBezierPoint(t, p0, p1, p2, p3));
                 }
             }
 
-            if (iterations != 0)
-            {
-                int pointsSize = points.Count;
-                float pointxSpacing = points[1].x / 2;
-                for (var i = 0; i < pointsSize * 2 - 2; i += 2)
-                {
-                    float pointYMax;
-                    float pointYMin;
-
-                    if (points[i].y > points[i + 1].y)
-                    {
-                        pointYMax = points[i].y;
-                        pointYMin = points[i + 1].y;
-                    }
-                    else
-                    {
-                        pointYMin = points[i].y;
-                        pointYMax = points[i + 1].y;
-                    }
-
-                    var pointY = pointYMin + UnityEngine.Random.value * (pointYMax - pointYMin);
-                    points.Insert(i + 1, new Vector2(pointxSpacing * (i + 1), pointY));
-                }
-                GenerateTerrain(points, iterations - 1, initPoints, maxX, minHeight, maxHeight);
-            }
+            points.Add(originalPoints[originalPoints.Count - 1]);
 
             return points;
+        }
+
+        public static Vector2 CalculateBezierPoint(float t,
+            Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+        {
+            var u = 1 - t;
+            var tt = t * t;
+            var uu = u * u;
+            var uuu = uu * u;
+            var ttt = tt * t;
+
+            var p = uuu * p0; //first term
+            p += 3 * uu * t * p1; //second term
+            p += 3 * u * tt * p2; //third term
+            p += ttt * p3; //fourth term
+
+            return p;
         }
 
         private Vector3[] ToVector3Array(SyncListStruct<Vector2> points)
