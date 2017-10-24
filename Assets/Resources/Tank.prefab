@@ -1204,7 +1204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d718e17140389bd42a32f8548288da58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxTorque: 50
+  MaxTorque: 75
   WheelColliders:
   - {fileID: 146552694043008762}
   - {fileID: 146625777167583614}

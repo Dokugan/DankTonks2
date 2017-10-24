@@ -20,6 +20,8 @@ namespace Assets.Scripts
         private const float MaxHeight = 8f;
         private const int Iterations = 5;
 
+        public PhysicMaterial Mat;
+
         // Use this for initialization
         void Start()
         {
@@ -61,7 +63,11 @@ namespace Assets.Scripts
             if (mc == null)
             {
                 gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
-            }else{
+
+                mc = gameObject.GetComponent<MeshCollider>();
+                mc.material = Mat;
+            }
+            else{
                 mc.sharedMesh = null;
                 mc.sharedMesh = mesh;
             }

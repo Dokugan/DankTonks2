@@ -463,6 +463,12 @@ Prefab:
       propertyPath: SidePane2
       value: 
       objectReference: {fileID: 447354552}
+    - target: {fileID: 114739820679378266, guid: f81090d2deb1e374ca73c9fde1f7c966,
+        type: 2}
+      propertyPath: Mat
+      value: 
+      objectReference: {fileID: 13400000, guid: 79b5d2400fc7b334889b54b6fa399efd,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f81090d2deb1e374ca73c9fde1f7c966, type: 2}
   m_IsPrefabParent: 0
