@@ -48,7 +48,7 @@ public class Projectile : NetworkBehaviour
             if (other.transform.parent.gameObject.tag == "Tank")
             {
                 var tank = (TankControls)other.transform.parent.gameObject.GetComponent(typeof(TankControls));
-                tank.DealDamage(10);
+                tank.CmdDealDamage(10);
                 Destroy(gameObject);
                 
             }

@@ -18,7 +18,7 @@ public class TankControls : NetworkBehaviour
 
     private Transform _rotationPoint;
 
-	// Use this for initialization
+    // Use this for initialization
 	void Start ()
 	{
 	    gameObject.tag = "Tank";
@@ -27,7 +27,7 @@ public class TankControls : NetworkBehaviour
 
         _rotationPoint = transform.GetChild(0);
 	    _healthbarSlider = GameObject.Find("HealthBar").GetComponent<Slider>();
-	    UpdateHealthbarValue();
+	    CmdUpdateHealthbarValue();
         foreach (var wheel in WheelColliders)
         {
             wheel.steerAngle = 90;
@@ -60,10 +60,10 @@ public class TankControls : NetworkBehaviour
 
 	void FixedUpdate ()
 	{
-//	    if (transform.localEulerAngles.z > 45 && transform.localEulerAngles.z < 180)
-//	        transform.localEulerAngles = new Vector3(0, 0, 45);
-//	    if (transform.localEulerAngles.z < 315 && transform.localEulerAngles.z >= 180)
-//	        transform.localEulerAngles = new Vector3(0, 0, 315);
+        //	    if (transform.localEulerAngles.z > 45 && transform.localEulerAngles.z < 180)
+        //	        transform.localEulerAngles = new Vector3(0, 0, 45);
+        //	    if (transform.localEulerAngles.z < 315 && transform.localEulerAngles.z >= 180)
+        //	        transform.localEulerAngles = new Vector3(0, 0, 315);
 
         float accelerate = Input.GetAxis("Horizontal");
 
@@ -103,7 +103,8 @@ public class TankControls : NetworkBehaviour
         _fireForce = value * _maxFireForce;
     }
 
-    public void DealDamage(float damage)
+    [Command]
+    public void CmdDealDamage(float damage)
     {
         if (_health - damage <= 0)
         {
@@ -114,10 +115,11 @@ public class TankControls : NetworkBehaviour
         {
             _health -= damage;
         }
-        UpdateHealthbarValue();
+        CmdUpdateHealthbarValue();
     }
-
-    public void UpdateHealthbarValue()
+    
+    [Command]
+    public void CmdUpdateHealthbarValue()
     {
         if (_healthbarSlider != null)
             _healthbarSlider.value = _health;
