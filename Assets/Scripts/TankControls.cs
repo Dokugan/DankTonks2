@@ -109,7 +109,7 @@ public class TankControls : NetworkBehaviour
 
     public void Die()
     {
-        Destroy(this);
+        Destroy(gameObject);
     }
 
     [Command]
