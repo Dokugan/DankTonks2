@@ -10,6 +10,7 @@ namespace Assets.Scripts
     {
         public Vector3[] Vertices;
         private int[] _triangles;
+        public GameObject SidePane2;
 
         [SerializeField] private SyncListVector2 _pointsList = new SyncListVector2();
 
@@ -19,9 +20,12 @@ namespace Assets.Scripts
         private const float MaxHeight = 10f;
         private const int Segments = 256;
 
+        public PhysicMaterial Mat;
+
         // Use this for initialization
         void Start()
         {
+            SidePane2.transform.position = new Vector3(MaxX, 0 ,0);
             gameObject.tag = "Terrain";
 
             if (isServer)
@@ -59,7 +63,11 @@ namespace Assets.Scripts
             if (mc == null)
             {
                 gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
-            }else{
+
+                mc = gameObject.GetComponent<MeshCollider>();
+                mc.material = Mat;
+            }
+            else{
                 mc.sharedMesh = null;
                 mc.sharedMesh = mesh;
             }
