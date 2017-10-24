@@ -55,6 +55,10 @@ public class TankControls : NetworkBehaviour
             {
                 CmdSpawnProjectile(_fireForce);
             }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                transform.localEulerAngles = new Vector3(0, 0, 0);
+            }
         }
     }
 
