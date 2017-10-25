@@ -10,7 +10,10 @@ public class TankControls : NetworkBehaviour
     private float GunRotation = 30f;
     private float _fireForce = 500;
     private float _maxFireForce = 2000;
+
+    [SyncVar]
     private float _health = 100;
+
     private Slider _healthbarSlider;
 
     public WheelCollider[] WheelColliders = new WheelCollider[5];
@@ -111,8 +114,7 @@ public class TankControls : NetworkBehaviour
     {
         Destroy(gameObject);
     }
-
-    [Command]
+    
     public void CmdDealDamage(float damage)
     {
         if (_health - damage <= 0)
@@ -127,7 +129,6 @@ public class TankControls : NetworkBehaviour
         CmdUpdateHealthbarValue();
     }
     
-    [Command]
     public void CmdUpdateHealthbarValue()
     {
         if (_healthbarSlider != null)
